@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 
+
 # Global currency symbol
 CURRENCY_SYMBOL = "£"
 
