@@ -1,53 +1,20 @@
 import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
+payload = {
+    'api_key': '85b8fd8da923bb4b2ca41280890d54cc',
+    'url': 'https://www.home.co.uk/selling/br6/time_to_sell/?location=br6',
+    'render': 'true'
+}
 
-def get_rightmove_search_urls(search_terms):
-    """
-    Returns a dictionary mapping search terms to their corresponding Rightmove search URLs.
-    Handles both direct matches and ambiguous location suggestions.
-    """
-    results = {}
-    base_url = "https://www.rightmove.co.uk/property-for-sale/find.html"
+try:
+    print("⏳ Fetching Home.co.uk via ScraperAPI...")
+    response = requests.get("https://api.scraperapi.com/", params=payload, timeout=30)
+    response.raise_for_status()
+    html = response.text
 
-    with requests.Session() as session:
-        session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        })
+    with open("br6_debug_rest.html", "w", encoding="utf-8") as f:
+        f.write(html)
 
-        for term in search_terms:
-            # Step 1: Perform initial search
-            response = session.get(base_url, params={"searchLocation": term}, allow_redirects=True)
-            response.raise_for_status()
-
-            # Step 2: Check if we got direct results
-            if "locationIdentifier" in response.url:
-                results[term] = [response.url]
-            else:
-                # Step 3: Parse location suggestions
-                soup = BeautifulSoup(response.text, "html.parser")
-                results[term] = []
-
-                # Find all suggestion links containing locationIdentifier
-                suggestion_links = soup.select('a[href*="locationIdentifier="]')
-                for link in suggestion_links:
-                    href = link.get("href")
-                    if href and "/property-for-sale/find.html" in href:
-                        absolute_url = urljoin(base_url, href)
-                        results[term].append(absolute_url)
-
-    return results
-
-
-if __name__ == "__main__":
-    searches = ["Manchester", "B", "SW1A"]  # Test terms (specific and ambiguous)
-    urls = get_rightmove_search_urls(searches)
-
-    # Print results
-    for term, links in urls.items():
-        print(f"Search: {term}")
-        print(f"Found {len(links)} URL(s):")
-        for url in links:
-            print(f"• {url}")
-        print("\n")
+    print("✅ HTML saved to br6_debug_rest.html")
+except Exception as e:
+    print("❌ ScraperAPI request failed:", e)

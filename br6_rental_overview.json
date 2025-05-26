@@ -1,0 +1,98 @@
+{
+  "summary": {
+    "total_properties": 55,
+    "new_in_14_days": 23,
+    "average_rent_pcm": 2086,
+    "median_rent_pcm": 1850
+  },
+  "rents_by_price_range": [
+    {
+      "range_label": "Under £250",
+      "min": 0,
+      "max": 250,
+      "count": 1
+    },
+    {
+      "range_label": "£250–£500",
+      "min": 250,
+      "max": 500,
+      "count": 0
+    },
+    {
+      "range_label": "£500–£1000",
+      "min": 500,
+      "max": 1000,
+      "count": 7
+    },
+    {
+      "range_label": "£1000–£2000",
+      "min": 1000,
+      "max": 2000,
+      "count": 25
+    },
+    {
+      "range_label": "£2000–£5000",
+      "min": 2000,
+      "max": 5000,
+      "count": 19
+    },
+    {
+      "range_label": "Over £5000",
+      "min": 5000,
+      "max": null,
+      "count": 3
+    }
+  ],
+  "rents_by_bedroom": [
+    {
+      "bedroom_category": "One bedroom",
+      "number_of_properties": 9,
+      "average_rent_pcm": 1369,
+      "median_rent_pcm": 1400
+    },
+    {
+      "bedroom_category": "Two bedrooms",
+      "number_of_properties": 8,
+      "average_rent_pcm": 1853,
+      "median_rent_pcm": 1825
+    },
+    {
+      "bedroom_category": "Three bedrooms",
+      "number_of_properties": 15,
+      "average_rent_pcm": 2097,
+      "median_rent_pcm": 2100
+    },
+    {
+      "bedroom_category": "Four bedrooms",
+      "number_of_properties": 8,
+      "average_rent_pcm": 2563,
+      "median_rent_pcm": 2500
+    },
+    {
+      "bedroom_category": "Five bedrooms",
+      "number_of_properties": 2,
+      "average_rent_pcm": 4750,
+      "median_rent_pcm": 4750
+    }
+  ],
+  "rents_by_property_type": [
+    {
+      "property_type": "Room",
+      "number_of_properties": 4,
+      "average_rent_pcm": 879,
+      "median_rent_pcm": 833
+    },
+    {
+      "property_type": "Flat",
+      "number_of_properties": 16,
+      "average_rent_pcm": 1859,
+      "median_rent_pcm": 1425
+    },
+    {
+      "property_type": "House",
+      "number_of_properties": 31,
+      "average_rent_pcm": 2514,
+      "median_rent_pcm": 2250
+    }
+  ]
+}
