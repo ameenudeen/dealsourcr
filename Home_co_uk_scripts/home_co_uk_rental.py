@@ -123,7 +123,7 @@ data = {
     "rents_by_property_type": type_data
 }
 
-with open("br6_rental_overview.json", "w", encoding="utf-8") as f:
+with open("../br6_rental_overview.json", "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 
 print("✅ Structured data saved to br6_rental_overview.json")
