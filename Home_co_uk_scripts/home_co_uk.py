@@ -50,7 +50,7 @@ def parse_table_rows(table, label_field):
 
 def scrape_postcode(postcode, retries=3):
     payload = {
-        'api_key': '85b8fd8da923bb4b2ca41280890d54cc',
+        'api_key': os.environ['SCRAPER_API_KEY'],
         'url': f'https://www.home.co.uk/selling/{postcode.lower()}/time_to_sell/?location={postcode}',
         'render': 'true'
     }

@@ -1,0 +1,200 @@
+[
+  {
+    "postcode": "BR1",
+    "summary": {
+      "total_properties": 109,
+      "new_in_14_days": 33,
+      "average_rent_pcm": 1981,
+      "median_rent_pcm": 1600
+    },
+    "rents_by_price_range": [
+      {
+        "range_label": "Under £250",
+        "min": 0,
+        "max": 250,
+        "count": 0
+      },
+      {
+        "range_label": "£250–£500",
+        "min": 250,
+        "max": 500,
+        "count": 0
+      },
+      {
+        "range_label": "£500–£1000",
+        "min": 500,
+        "max": 1000,
+        "count": 16
+      },
+      {
+        "range_label": "£1000–£2000",
+        "min": 1000,
+        "max": 2000,
+        "count": 64
+      },
+      {
+        "range_label": "£2000–£5000",
+        "min": 2000,
+        "max": 5000,
+        "count": 24
+      },
+      {
+        "range_label": "Over £5000",
+        "min": 5000,
+        "max": null,
+        "count": 5
+      }
+    ],
+    "rents_by_bedroom": [
+      {
+        "bedroom_category": "One bedroom",
+        "number_of_properties": 28,
+        "average_rent_pcm": 1376,
+        "median_rent_pcm": 1400
+      },
+      {
+        "bedroom_category": "Two bedrooms",
+        "number_of_properties": 29,
+        "average_rent_pcm": 1812,
+        "median_rent_pcm": 1750
+      },
+      {
+        "bedroom_category": "Three bedrooms",
+        "number_of_properties": 21,
+        "average_rent_pcm": 2331,
+        "median_rent_pcm": 2300
+      },
+      {
+        "bedroom_category": "Four bedrooms",
+        "number_of_properties": 5,
+        "average_rent_pcm": 3630,
+        "median_rent_pcm": 3200
+      },
+      {
+        "bedroom_category": "Five bedrooms",
+        "number_of_properties": 5,
+        "average_rent_pcm": 5240,
+        "median_rent_pcm": 6000
+      }
+    ],
+    "rents_by_property_type": [
+      {
+        "property_type": "Room",
+        "number_of_properties": 17,
+        "average_rent_pcm": 898,
+        "median_rent_pcm": 875
+      },
+      {
+        "property_type": "Flat",
+        "number_of_properties": 57,
+        "average_rent_pcm": 1688,
+        "median_rent_pcm": 1600
+      },
+      {
+        "property_type": "House",
+        "number_of_properties": 32,
+        "average_rent_pcm": 3120,
+        "median_rent_pcm": 2425
+      }
+    ]
+  },
+  {
+    "postcode": "BR2",
+    "summary": {
+      "total_properties": 59,
+      "new_in_14_days": 22,
+      "average_rent_pcm": 1914,
+      "median_rent_pcm": 1700
+    },
+    "rents_by_price_range": [
+      {
+        "range_label": "Under £250",
+        "min": 0,
+        "max": 250,
+        "count": 0
+      },
+      {
+        "range_label": "£250–£500",
+        "min": 250,
+        "max": 500,
+        "count": 0
+      },
+      {
+        "range_label": "£500–£1000",
+        "min": 500,
+        "max": 1000,
+        "count": 7
+      },
+      {
+        "range_label": "£1000–£2000",
+        "min": 1000,
+        "max": 2000,
+        "count": 38
+      },
+      {
+        "range_label": "£2000–£5000",
+        "min": 2000,
+        "max": 5000,
+        "count": 12
+      },
+      {
+        "range_label": "Over £5000",
+        "min": 5000,
+        "max": null,
+        "count": 2
+      }
+    ],
+    "rents_by_bedroom": [
+      {
+        "bedroom_category": "One bedroom",
+        "number_of_properties": 12,
+        "average_rent_pcm": 1412,
+        "median_rent_pcm": 1438
+      },
+      {
+        "bedroom_category": "Two bedrooms",
+        "number_of_properties": 25,
+        "average_rent_pcm": 1829,
+        "median_rent_pcm": 1700
+      },
+      {
+        "bedroom_category": "Three bedrooms",
+        "number_of_properties": 5,
+        "average_rent_pcm": 2280,
+        "median_rent_pcm": 2100
+      },
+      {
+        "bedroom_category": "Four bedrooms",
+        "number_of_properties": 3,
+        "average_rent_pcm": 2900,
+        "median_rent_pcm": 2800
+      },
+      {
+        "bedroom_category": "Five bedrooms",
+        "number_of_properties": 4,
+        "average_rent_pcm": 4999,
+        "median_rent_pcm": 4998
+      }
+    ],
+    "rents_by_property_type": [
+      {
+        "property_type": "Room",
+        "number_of_properties": 2,
+        "average_rent_pcm": 890,
+        "median_rent_pcm": 890
+      },
+      {
+        "property_type": "Flat",
+        "number_of_properties": 37,
+        "average_rent_pcm": 1660,
+        "median_rent_pcm": 1650
+      },
+      {
+        "property_type": "House",
+        "number_of_properties": 16,
+        "average_rent_pcm": 2913,
+        "median_rent_pcm": 2475
+      }
+    ]
+  }
+]

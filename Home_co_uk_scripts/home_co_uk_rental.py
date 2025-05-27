@@ -2,12 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import re
+from datetime import datetime
+import os
+import time
 
-
-# Global currency symbol
+# Global config
 CURRENCY_SYMBOL = "£"
+SCRAPERAPI_KEY = os.environ['SCRAPER_API_KEY']
+SCRAPERAPI_URL = "http://api.scraperapi.com/"
+MAX_RETRIES = 3
+RETRY_DELAY = 5  # seconds between retries
 
-# Clean currency and numeric strings
 def clean(text):
     return (
         text.replace("\u00a3", "")
@@ -17,10 +22,8 @@ def clean(text):
             .strip()
     )
 
-# Convert raw range strings into structured format
 def convert_price_ranges(raw_ranges):
     structured = []
-
     for entry in raw_ranges:
         label = entry["range"].replace("pcm", "").strip()
         count = entry["number_of_properties"]
@@ -56,74 +59,113 @@ def convert_price_ranges(raw_ranges):
                 "max": None,
                 "count": count
             })
-
     return structured
 
-# Fetch the page
-url = "https://www.home.co.uk/for_rent/br6/current_rents?location=br6"
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-}
-response = requests.get(url, headers=headers)
-soup = BeautifulSoup(response.text, 'html.parser')
+def scrape_postcode(postcode):
+    target_url = f"https://www.home.co.uk/for_rent/{postcode.lower()}/current_rents?location={postcode}"
+    params = {
+        "api_key": SCRAPERAPI_KEY,
+        "url": target_url,
+        "render": "false"
+    }
 
-# ----------- Summary Data -----------
-summary_table = soup.find_all("table", class_="table--plain")[0]
-summary_rows = summary_table.find_all("tr")
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = requests.get(SCRAPERAPI_URL, params=params, timeout=20)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-summary = {
-    "total_properties": int(summary_rows[0].find_all("td")[1].text.strip()),
-    "new_in_14_days": int(summary_rows[1].find_all("td")[1].text.strip()),
-    "average_rent_pcm": int(clean(summary_rows[2].find_all("td")[1].text)),
-    "median_rent_pcm": int(clean(summary_rows[3].find_all("td")[1].text)),
-}
+            tables = soup.find_all("table", class_="table--plain")
+            if len(tables) < 4:
+                raise ValueError("Expected tables not found in HTML")
 
-# ----------- Rents by Price Range -----------
-price_table = soup.find_all("table", class_="table--plain")[1]
-raw_price_data = []
-for row in price_table.find_all("tr")[1:]:
-    cells = row.find_all("td")
-    if len(cells) == 2:
-        raw_price_data.append({
-            "range": cells[0].text.strip(),
-            "number_of_properties": int(cells[1].text.strip())
-        })
+            summary_rows = tables[0].find_all("tr")
+            summary = {
+                "total_properties": int(summary_rows[0].find_all("td")[1].text.strip()),
+                "new_in_14_days": int(summary_rows[1].find_all("td")[1].text.strip()),
+                "average_rent_pcm": int(clean(summary_rows[2].find_all("td")[1].text)),
+                "median_rent_pcm": int(clean(summary_rows[3].find_all("td")[1].text)),
+            }
 
-structured_price_data = convert_price_ranges(raw_price_data)
+            raw_price_data = []
+            for row in tables[1].find_all("tr")[1:]:
+                cells = row.find_all("td")
+                if len(cells) == 2:
+                    raw_price_data.append({
+                        "range": cells[0].text.strip(),
+                        "number_of_properties": int(cells[1].text.strip())
+                    })
+            structured_price_data = convert_price_ranges(raw_price_data)
 
-# ----------- Rents by Bedrooms -----------
-bedroom_table = soup.find_all("table", class_="table--plain")[2]
-bedroom_data = []
-for row in bedroom_table.find_all("tr")[1:]:
-    cells = row.find_all("td")
-    bedroom_data.append({
-        "bedroom_category": cells[0].text.strip(),
-        "number_of_properties": int(cells[1].text.strip()),
-        "average_rent_pcm": int(clean(cells[2].text)),
-        "median_rent_pcm": int(clean(cells[3].text))
-    })
+            bedroom_data = []
+            for row in tables[2].find_all("tr")[1:]:
+                cells = row.find_all("td")
+                bedroom_data.append({
+                    "bedroom_category": cells[0].text.strip(),
+                    "number_of_properties": int(cells[1].text.strip()),
+                    "average_rent_pcm": int(clean(cells[2].text)),
+                    "median_rent_pcm": int(clean(cells[3].text))
+                })
 
-# ----------- Rents by Property Type -----------
-type_table = soup.find_all("table", class_="table--plain")[3]
-type_data = []
-for row in type_table.find_all("tr")[1:]:
-    cells = row.find_all("td")
-    type_data.append({
-        "property_type": cells[0].text.strip(),
-        "number_of_properties": int(cells[1].text.strip()),
-        "average_rent_pcm": int(clean(cells[2].text)),
-        "median_rent_pcm": int(clean(cells[3].text))
-    })
+            type_data = []
+            for row in tables[3].find_all("tr")[1:]:
+                cells = row.find_all("td")
+                type_data.append({
+                    "property_type": cells[0].text.strip(),
+                    "number_of_properties": int(cells[1].text.strip()),
+                    "average_rent_pcm": int(clean(cells[2].text)),
+                    "median_rent_pcm": int(clean(cells[3].text))
+                })
 
-# ----------- Combine and Save -----------
-data = {
-    "summary": summary,
-    "rents_by_price_range": structured_price_data,
-    "rents_by_bedroom": bedroom_data,
-    "rents_by_property_type": type_data
-}
+            return {
+                "postcode": postcode,
+                "summary": summary,
+                "rents_by_price_range": structured_price_data,
+                "rents_by_bedroom": bedroom_data,
+                "rents_by_property_type": type_data
+            }
 
-with open("../br6_rental_overview.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"⚠️ Attempt {attempt}/{MAX_RETRIES} failed for {postcode}: {e}")
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_DELAY)
+            else:
+                return None
 
-print("✅ Structured data saved to br6_rental_overview.json")
+# ----------- MAIN -----------
+postcodes = ["BR1", "BR2"]  # Replace with up to 2000 postcodes if needed
+all_results = []
+failed_postcodes = []
+
+total = len(postcodes)
+success_count = 0
+fail_count = 0
+
+for idx, postcode in enumerate(postcodes, start=1):
+    print(f"\n🔄 Processing {idx} of {total}: {postcode}")
+    result = scrape_postcode(postcode)
+    if result:
+        all_results.append(result)
+        success_count += 1
+        print(f"✅ Success: {postcode} ({success_count} successful)")
+    else:
+        failed_postcodes.append(postcode)
+        fail_count += 1
+        print(f"❌ Failed after {MAX_RETRIES} attempts: {postcode} ({fail_count} failed)")
+
+# Save results
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+output_filename = f"home_co_uk_rental_{timestamp}.json"
+with open(output_filename, "w", encoding="utf-8") as f:
+    json.dump(all_results, f, indent=2, ensure_ascii=False)
+print(f"\n📁 Data saved to: {output_filename}")
+
+# Save failed postcodes
+if failed_postcodes:
+    fail_filename = f"home_co_uk_rental_failed_{timestamp}.txt"
+    with open(fail_filename, "w") as f:
+        for p in failed_postcodes:
+            f.write(p + "\n")
+    print(f"📝 Failed postcodes logged to: {fail_filename}")
+
+# Final summary
+print(f"\n🎯 Scraping complete — {success_count} succeeded, {fail_count} failed, out of {total} postcodes.")
